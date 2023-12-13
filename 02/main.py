@@ -27,6 +27,14 @@ def determine_if_possible(game, total_dice):
                 is_possible = False
     return {"game_number": game['game_number'], "is_possible": is_possible}
 
+def compute_power(game):
+    needed_dice = {"red": 0, "green": 0, "blue": 0}
+    for draw in game["draws"]:
+        for color, count in draw.items():
+            if count > needed_dice[color]:
+                needed_dice[color] = count
+    return needed_dice['red'] * needed_dice['green'] * needed_dice['blue']
+
 def parse_games(lines):
     games = []
     for line in lines:
@@ -42,6 +50,8 @@ if __name__ == "__main__":
     total_dice = {"red": 12, "green": 13, "blue": 14}
     parsed_games = parse_games(data)
     possibile_games = [determine_if_possible(game, total_dice) for game in parsed_games]
-    sum_of_possible_games = sum([game["game_number"] for game in possibile_games if game["is_possible"]])
+    powers = [compute_power(game) for game in parsed_games]
+    print(powers)
+    sum_of_powers = sum(powers)
     
-    print(f"Sum of possible games: {sum_of_possible_games}")
+    print(f"Sum of possible games: {sum_of_powers}")
